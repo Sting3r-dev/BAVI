@@ -7,9 +7,51 @@
 <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
 </head>
 <body>
-<a-scene vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true'>
-    <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
-    <a-entity material='color: red' geometry='primitive: box' gps-new-entity-place="latitude: <your-lat>; longitude: <your-loon>" scale="10 10 10"></a-entity>
-</a-scene>
+
+<script>
+    // Request access to the user's microphone
+navigator.mediaDevices.getUserMedia({ audio: true })
+  .then(function(stream) {
+    // Create an AudioContext
+    var audioContext = new AudioContext();
+
+    // Create a MediaStreamAudioSourceNode
+    var source = audioContext.createMediaStreamSource(stream);
+
+    // Create a ScriptProcessorNode to process audio data
+    var processor = audioContext.createScriptProcessor(1024, 1, 1);
+
+    // Connect the nodes
+    source.connect(processor);
+    processor.connect(audioContext.destination);
+
+    // Callback function to handle audio data
+    processor.onaudioprocess = function(event) {
+      // Get the input buffer
+      var inputBuffer = event.inputBuffer;
+
+      // Get the data from the buffer
+      var inputData = inputBuffer.getChannelData(0);
+
+      // Analyze the audio data to determine direction
+      // This is where you would implement your direction detection algorithm
+      // For example, you might use FFT to perform frequency analysis
+
+      // Example: Calculate average volume level
+      var sum = 0;
+      for (var i = 0; i < inputData.length; i++) {
+        sum += Math.abs(inputData[i]);
+      }
+      var average = sum / inputData.length;
+
+      // Output the result
+      console.log("Average volume level: " + average);
+    };
+  })
+  .catch(function(err) {
+    console.error('Error accessing microphone:', err);
+  });
+
+</script>
 </body>
 </html>
