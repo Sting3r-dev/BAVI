@@ -8,6 +8,7 @@
 </head>
 <body>
 <p id="Output"></p>
+<p id="mc"></p>
 <script>
     // Request access to the user's microphone
 navigator.mediaDevices.getUserMedia({ audio: true })
@@ -51,7 +52,39 @@ navigator.mediaDevices.getUserMedia({ audio: true })
   .catch(function(err) {
     document.getElementById("Output").innerHTML = "Error accessing microphone: " + err;
   });
+  return_str = ""
+  function mic_check(){
+    
+    navigator.mediaDevices.enumerateDevices()
+  .then(function(devices) {
+    // Filter out only audio input devices (microphones)
+    var microphones = devices.filter(function(device) {
+      return device.kind === 'audioinput';
+    });
 
+    // Log information about each microphone
+    microphones.forEach(function(microphone, index) {
+      return_str += ('Microphone ' + (index + 1) + ':')+"<br>";
+
+      return_str += ('Device ID: ' + microphone.deviceId)+"<br>";
+      return_str += ('Label: ' + microphone.label)+"<br>";
+      return_str += ('Group ID: ' + microphone.groupId)+"<br>";
+      return_str += ('Kind: ' + microphone.kind)+"<br>";
+      return_str += ('----------------------------------')+"<br>";
+    });
+
+    // If no microphones are found
+    if (microphones.length === 0) {
+        return_str += ('No microphones found.');
+    }
+  })
+  .catch(function(err) {
+    return_str += ('Error enumerating devices:', err);
+  });
+  console.log(return_str)
+  document.getElementById("mc").innerHTML = return_str;
+  }
+  mic_check()
 </script>
 </body>
 </html>
