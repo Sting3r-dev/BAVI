@@ -7,7 +7,7 @@
 <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
 </head>
 <body>
-
+<p id="Output"></p>
 <script>
     // Request access to the user's microphone
 navigator.mediaDevices.getUserMedia({ audio: true })
@@ -45,11 +45,11 @@ navigator.mediaDevices.getUserMedia({ audio: true })
       var average = sum / inputData.length;
 
       // Output the result
-      console.log("Average volume level: " + average);
+      document.getElementById("Output").innerHTML = "Average volume level: " + average;
     };
   })
   .catch(function(err) {
-    console.error('Error accessing microphone:', err);
+    document.getElementById("Output").innerHTML = "Error accessing microphone: " + err;
   });
 
 </script>
